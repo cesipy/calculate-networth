@@ -2,7 +2,7 @@ import yfinance as yf
 
 GERMANS = ['VWCE.DE','M44.BE', 'EUNM.DE', '82W.BE']
 
-# load current eur-usd
+# load current eur-usd exchange rate
 tickerSymbol = 'EURUSD=X'
 tickerData = yf.Ticker(tickerSymbol)
 exchangeRate = tickerData.info['regularMarketOpen']
@@ -27,8 +27,8 @@ for i in positions:
         #print("reached!")
         value = value * exchangeRate
 
-
-    print("ticker: {}; worth: {}".format(ticker, value))
+    formated_output = "ticker: {:<{width}} worth: {:{width}.2f}".format(ticker, value, width=15)
+    print(formated_output)
 
     total_value += value
 
