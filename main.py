@@ -13,9 +13,14 @@ def save_to_file(value):
         # get current time
         current_time = int(time.time())
 
+        # prepare data for csv
         data = [current_time, value]
-
+        # write to csv
         writer.writerow(data)
+
+
+def plot_networth(void):
+    pass
 
 
 # load current eur-usd exchange rate
@@ -42,8 +47,8 @@ for i in positions:
         # print("reached!")
         value = value * exchangeRate
 
-    formated_output = "ticker: {:<{width}} worth: {:{width}.2f}".format(ticker, value, width=15)
-    print(formated_output)
+    formatted_output = "ticker: {:<{width}} worth: {:{width}.2f}".format(ticker, value, width=15)
+    print(formatted_output)
 
     total_value += value
 
