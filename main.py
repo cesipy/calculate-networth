@@ -1,6 +1,8 @@
 import yfinance as yf
 import csv
 import time
+import matplotlib.pyplot as plt
+import datetime
 
 # assets in eur
 EUROS = ['VWCE.DE', 'M44.BE', 'EUNM.DE', '82W.BE']
@@ -19,43 +21,68 @@ def save_to_file(value):
         writer.writerow(data)
 
 
-def plot_networth(void):
-    pass
+def plot_networth():
+    dates, values = read_from_csv()
+    plt.plot(dates, values)
+
+    plt.show()
 
 
-# load current eur-usd exchange rate
-tickerSymbol = 'EURUSD=X'
-tickerData = yf.Ticker(tickerSymbol)
-exchangeRate = tickerData.info['regularMarketOpen']
+def read_from_csv():
+    values_array = []
+    dates_array  = []
+    with open("networth_over_time.csv", mode="r") as f:
+        reader = csv.reader(f)
 
-# load positions from file
-with open("positions.txt") as f:
-    positions = [line.strip().split(",") for line in f]
+        # skip header
+        header = next(reader, None)
 
-# calculate total value of all positions
-total_value = 0
-for i in positions:
-    value = 0
-    nested_arr = i[0].split()
-    ticker = nested_arr[0]
-    ticker = ticker[1:-1]
-    num_shares = float(nested_arr[1])
+        for row in reader:
+            unix_timestamp = int(row[0])
+            date_object = datetime.datetime.fromtimestamp(unix_timestamp).date()
+            values_array.append(float(row[1]))
+            dates_array.append(date_object)
 
-    value = yf.Ticker(ticker).info['regularMarketOpen'] * num_shares
-    # special handling:
-    if ticker in EUROS:
-        # print("reached!")
-        value = value * exchangeRate
+    return (dates_array, values_array)
 
-    formatted_output = "ticker: {:<{width}} worth: {:{width}.2f}".format(ticker, value, width=15)
-    print(formatted_output)
 
-    total_value += value
+def main():
+    # load current eur-usd exchange rate
+    tickerSymbol = 'EURUSD=X'
+    tickerData = yf.Ticker(tickerSymbol)
+    exchangeRate = tickerData.info['regularMarketOpen']
 
-total_value /= exchangeRate
-total_value = round(total_value, 2)
+    # load positions from file
+    with open("positions.txt") as f:
+        positions = [line.strip().split(",") for line in f]
 
-print(f"Total portfolio value in €: {total_value:.2f}")
+    # calculate total value of all positions
+    total_value = 0
+    for i in positions:
+        value = 0
+        nested_arr = i[0].split()
+        ticker = nested_arr[0]
+        ticker = ticker[1:-1]
+        num_shares = float(nested_arr[1])
 
-# add to csv
-save_to_file(total_value)
+        value = yf.Ticker(ticker).info['regularMarketOpen'] * num_shares
+        # special handling:
+        if ticker in EUROS:
+            # print("reached!")
+            value = value * exchangeRate
+
+        formatted_output = "ticker: {:<{width}} worth: {:{width}.2f}".format(ticker, value, width=15)
+        print(formatted_output)
+
+        total_value += value
+
+    total_value /= exchangeRate
+    total_value = round(total_value, 2)
+
+    print(f"Total portfolio value in €: {total_value:.2f}")
+
+    # add to csv
+    save_to_file(total_value)
+
+
+plot_networth()
