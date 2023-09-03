@@ -1,3 +1,4 @@
+import sys
 import yfinance as yf
 import csv
 import time
@@ -20,6 +21,8 @@ def save_to_file(value):
         # get current time
         current_time = int(time.time())
 
+        # current_date_readable = datetime.datetime.fromtimestamp(current_time).date()
+
         # prepare data for csv
         data = [current_time, value]
         # write to csv
@@ -35,7 +38,7 @@ def plot_networth():
 
 def read_from_csv():
     values_array = []
-    dates_array  = []
+    dates_array = []
     with open("networth_over_time.csv", mode="r") as f:
         reader = csv.reader(f)
 
@@ -70,7 +73,17 @@ def read_positions():
 
     return tickers, amounts
 
+
 def main():
+    flag = False
+    if len(sys.argv) >= 2:
+
+        if sys.argv[1] == '-plot':
+            flag = True
+
+        else:
+            sys.exit(1)
+
     # load positions from .csv
     tickers, amounts = read_positions()
 
@@ -105,6 +118,11 @@ def main():
     # add to csv
     save_to_file(total_value)
 
+    if flag:
+        plot_networth()
+
 
 if __name__ == '__main__':
     main()
+
+
