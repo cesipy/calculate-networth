@@ -35,7 +35,12 @@ def plot_networth():
     plots networth history.
     """
     dates, values = read_from_csv()
+
+    plt.figure(figsize=(10, 6))
+    
     plt.plot(dates, values)
+    plt.xlabel("Date")
+    plt.ylabel("Networth in €")
 
     plt.show()
 
@@ -106,11 +111,17 @@ usage:
 for simple calculation of current networth: python {}
 
 for calculation of current networth and plot of networth history: python {} -plot 
+
+for plot only: python {} -plotonly
                 
-                """.format(sys.argv[0], sys.argv[0])
+                """.format(sys.argv[0], sys.argv[0], sys.argv[0])
 
             print(usage)
             sys.exit(1)
+
+        elif sys.argv[1] == '-plotonly':
+            plot_networth()
+            sys.exit(1)     # exit early, dont want to calculate current networth
 
         else:
             print("incorrect usage! type 'python {} -help' for usage".format(sys.argv[0]))
