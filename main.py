@@ -74,7 +74,16 @@ def read_positions():
     return tickers, amounts
 
 
-def main():
+def handle_cli() -> bool:
+    """
+    handles command line arguments and returns flag, whether networth should be plotted.
+
+    possible flags:
+        `-plot` - plots networth history.
+        `-help` - show usage.
+
+    :return: flag indicating, if networth should be plotted.
+    """
     flag = False
     if len(sys.argv) >= 2:
 
@@ -83,6 +92,12 @@ def main():
 
         else:
             sys.exit(1)
+
+    return flag
+
+
+def main():
+    flag = handle_cli()
 
     # load positions from .csv
     tickers, amounts = read_positions()
