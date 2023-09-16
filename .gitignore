@@ -3,3 +3,4 @@ positions.csv
 test.py
 networth_over_time.csv
 .idea
+.DS_Store
