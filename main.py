@@ -84,13 +84,26 @@ def handle_cli() -> bool:
 
     :return: flag indicating, if networth should be plotted.
     """
-    flag = False
+    flag: bool = False
     if len(sys.argv) >= 2:
 
         if sys.argv[1] == '-plot':
             flag = True
 
+        elif sys.argv[1] == '-help':
+            usage: str = """
+usage: 
+for simple calculation of current networth: python {}
+
+for calculation of current networth and plot of networth history: python {} -plot 
+                
+                """.format(sys.argv[0], sys.argv[0])
+
+            print(usage)
+            sys.exit(1)
+
         else:
+            print("incorrect usage! type 'python {} -help' for usage".format(sys.argv[0]))
             sys.exit(1)
 
     return flag
