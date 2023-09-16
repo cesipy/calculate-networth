@@ -4,6 +4,7 @@ import csv
 import time
 import matplotlib.pyplot as plt
 import datetime
+import typing
 
 # load current eur-usd exchange rate
 tickerSymbol = 'EURUSD=X'
@@ -15,13 +16,13 @@ EUROS = ['VWCE.DE', 'M44.BE', 'EUNM.DE', '82W.BE']
 
 
 def save_to_file(value):
+    """
+    saves current networth `value` to .csv.
+    """
     with open("networth_over_time.csv", mode="a", newline="") as f:
         writer = csv.writer(f)
 
-        # get current time
         current_time = int(time.time())
-
-        # current_date_readable = datetime.datetime.fromtimestamp(current_time).date()
 
         # prepare data for csv
         data = [current_time, value]
@@ -30,13 +31,19 @@ def save_to_file(value):
 
 
 def plot_networth():
+    """
+    plots networth history.
+    """
     dates, values = read_from_csv()
     plt.plot(dates, values)
 
     plt.show()
 
 
-def read_from_csv():
+def read_from_csv() -> (typing.List[int], typing.List[int]):
+    """
+    reads historical data from .csv.
+    """
     values_array = []
     dates_array = []
     with open("networth_over_time.csv", mode="r") as f:
@@ -55,6 +62,9 @@ def read_from_csv():
 
 
 def read_positions():
+    """
+    reads positions from .csv.
+    """
     tickers = []
     amounts = []
     with open("positions.csv", mode="r") as f:
