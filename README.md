@@ -29,17 +29,17 @@ In order to do this copy `positions.csv.sample` to `positions.csv`. Do the same 
 To perform a simple calculation of the current net worth:
 
 ```bash
-python src/main.py
+python main.py
 ```
 
 To calculate the current net worth and plot the net worth history:
 
 ```bash
-python src/main.py -plot
+python main.py -plot
 ```
 
 To only plot the net worth history:
 
 ```bash
-python src/main.py -plotonly
+python main.py -plotonly
 ```
