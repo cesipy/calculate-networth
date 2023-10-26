@@ -5,15 +5,36 @@ import time
 import matplotlib.pyplot as plt
 import datetime
 import typing
+import requests
+import pyEX as p
+import os
+
+
+api_key_iex =os.get("IEXCLOUD_API_KEY")
+
 
 # load current eur-usd exchange rate
 tickerSymbol = 'EURUSD=X'
 tickerData = yf.Ticker(tickerSymbol)
-exchangeRate = tickerData.info['regularMarketOpen']
+#exchangeRate = tickerData.info['regularMarketOpen']
 
 # assets in eur
 EUROS = ['VWCE.DE', 'M44.BE', 'EUNM.DE', '82W.BE']
 
+
+def get_value(ticker): 
+
+    api_url = f'https://cloud.iexapis.com/stable/stock/{ticker}/quote?token={api_key_iex}'
+    df      = requests.get(api_url).json()
+
+    current_price:float = float( df["iexAskPrice"] )
+    return current_price
+
+
+def test():
+    test_tickers = ["BTC-USD"]
+    for ticker in test_tickers: 
+        print(get_value(ticker))
 
 def save_to_file(value):
     """
@@ -145,11 +166,13 @@ def main():
 
         num_shares = amounts[i]
 
-        value = yf.Ticker(ticker).info['regularMarketOpen'] * num_shares
-        # special handling for euro assets:
-        if ticker in EUROS:
-            # calculate usd value of euro assets
-            value = value * exchangeRate
+        value = 0
+
+        # value = yf.Ticker(ticker).info['regularMarketOpen'] * num_shares
+        # # special handling for euro assets:
+        # if ticker in EUROS:
+        #    # calculate usd value of euro assets
+        #    value = value * exchangeRate
 
         # print to terminal
         formatted_output = "ticker: {:<{width}} worth: {:{width}.2f}".format(ticker, value, width=15)
@@ -172,6 +195,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
-
+    #main()
+    test()
 
