@@ -2,7 +2,8 @@
 # Calculate Current Networth
 
 ---
-unfortunately this code is not working anymore, due to changes to the yahoofinance api. Hopefully, this code will be adjusted accordingly in the future.
+Unfortunately this code is not working anymore, due to changes to the yahoofinance api. Hopefully, this code will be adjusted accordingly in the future.
+
 ---
 
 This Python script calculates the current net worth of assets specified in a CSV file. 
