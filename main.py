@@ -15,9 +15,15 @@ exchangeRate = tickerData.info['regularMarketOpen']
 EUROS = ['VWCE.DE', 'M44.BE', 'EUNM.DE', '82W.BE']
 
 
-def save_to_file(value):
+def calculate_value(ticker: str, num_shares: float) -> float:
+    return yf.Ticker(ticker).info['regularMarketOpen'] * num_shares
+
+
+
+
+def save_to_file(value: float):
     """
-    saves current networth `value` to .csv.
+    saves current networth `value` to `positions.csv`.
     """
     with open("networth_over_time.csv", mode="a", newline="") as f:
         writer = csv.writer(f)
@@ -32,7 +38,7 @@ def save_to_file(value):
 
 def plot_networth():
     """
-    plots networth history.
+    plots networth history in a coordinate system using time in x axis and value on y axis.
     """
     dates, values = read_from_csv()
 
@@ -66,7 +72,7 @@ def read_from_csv() -> (typing.List[int], typing.List[int]):
     return (dates_array, values_array)
 
 
-def read_positions():
+def read_positions() -> typing.Tuple[typing.List[str], typing.List[int]]:
     """
     reads positions from .csv.
     """
@@ -145,7 +151,8 @@ def main():
 
         num_shares = amounts[i]
 
-        value = yf.Ticker(ticker).info['regularMarketOpen'] * num_shares
+        #value = yf.Ticker(ticker).info['regularMarketOpen'] * num_shares+
+        value = calculate_value(ticker, num_shares)
         # special handling for euro assets:
         if ticker in EUROS:
             # calculate usd value of euro assets
