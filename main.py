@@ -19,8 +19,6 @@ def calculate_value(ticker: str, num_shares: float) -> float:
     return yf.Ticker(ticker).info['regularMarketOpen'] * num_shares
 
 
-
-
 def save_to_file(value: float):
     """
     saves current networth `value` to `positions.csv`.
