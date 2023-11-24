@@ -12,7 +12,7 @@ tickerData = yf.Ticker(tickerSymbol)
 exchangeRate = tickerData.info['regularMarketOpen']
 
 # assets in eur
-EUROS = ['VWCE.DE', 'M44.BE', 'EUNM.DE', '82W.BE']
+EUROS = []  # insert here!
 
 
 def calculate_value(ticker: str, num_shares: float) -> float:
