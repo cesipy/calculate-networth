@@ -98,37 +98,37 @@ def handle_cli() -> bool:
     handles command line arguments and returns flag, whether networth should be plotted.
 
     possible flags:
-        `-plot` - plots networth history.
-        `-help` - show usage.
+        `--plot` - plots networth history.
+        `--help` - show usage.
 
     :return: flag indicating, if networth should be plotted.
     """
     flag: bool = False
     if len(sys.argv) >= 2:
 
-        if sys.argv[1] == '-plot':
+        if sys.argv[1] == '--plot':
             flag = True
 
-        elif sys.argv[1] == '-help':
+        elif sys.argv[1] == '--help':
             usage: str = """
-usage: 
-for simple calculation of current networth: python {}
+    usage: 
+    for simple calculation of current networth: python {}
 
-for calculation of current networth and plot of networth history: python {} -plot 
+    for calculation of current networth and plot of networth history: python {} --plot 
 
-for plot only: python {} -plotonly
+    for plot only: python {} --plotonly
                 
                 """.format(sys.argv[0], sys.argv[0], sys.argv[0])
 
             print(usage)
             sys.exit(1)
 
-        elif sys.argv[1] == '-plotonly':
+        elif sys.argv[1] == '--plotonly':
             plot_networth()
             sys.exit(1)     # exit early, dont want to calculate current networth
 
         else:
-            print("incorrect usage! type 'python {} -help' for usage".format(sys.argv[0]))
+            print("incorrect usage! type 'python {} --help' for usage".format(sys.argv[0]))
             sys.exit(1)
 
     return flag
