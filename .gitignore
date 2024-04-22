@@ -6,3 +6,4 @@ networth_over_time.csv
 .DS_Store
 positions_eur.txt
 /venv
+logs/*.log
