@@ -7,3 +7,4 @@ networth_over_time.csv
 positions_eur.txt
 /venv
 logs/*.log
+__pycache__

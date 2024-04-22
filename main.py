@@ -5,6 +5,7 @@ import time
 import matplotlib.pyplot as plt
 import datetime
 import typing
+from logger import Logger
 
 # load current eur-usd exchange rate
 tickerSymbol = 'EURUSD=X'
@@ -14,6 +15,7 @@ exchangeRate = tickerData.info['regularMarketOpen']
 # assets in eur
 EUROS = ['VWCE.DE', 'M44.BE', 'EUNM.DE', '82W.BE', 'Bank_Sparbuch', 'Bank_N26', 'Bank_Raika']  # insert here!
 
+logger = Logger()
 
 def calculate_value(ticker: str, num_shares: float) -> float:
     if ticker.startswith("Bank") or ticker.startswith("bank"):
@@ -160,6 +162,7 @@ def main():
 
         # print to terminal
         formatted_output = "ticker: {:<{width}} worth: {:{width}.2f}".format(ticker, value, width=15)
+        logger.log(formatted_output)
         print(formatted_output)
 
         total_value += value
@@ -169,6 +172,7 @@ def main():
     total_value = round(total_value, 2)
 
     # print total value of portfolio
+    logger.log(f"Total portfolio value in €: {total_value:.2f}")
     print(f"Total portfolio value in €: {total_value:.2f}")
 
     # add to csv
