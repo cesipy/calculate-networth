@@ -5,3 +5,4 @@ networth_over_time.csv
 .idea
 .DS_Store
 positions_eur.txt
+/venv
