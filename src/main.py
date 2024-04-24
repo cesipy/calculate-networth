@@ -27,7 +27,7 @@ def save_to_file(value: float):
     """
     saves current networth `value` to `positions.csv`.
     """
-    with open("networth_over_time.csv", mode="a", newline="") as f:
+    with open("res/networth_over_time.csv", mode="a", newline="") as f:
         writer = csv.writer(f)
 
         current_time = int(time.time())
@@ -53,13 +53,13 @@ def plot_networth():
     plt.show()
 
 
-def read_from_csv() -> (typing.List[int], typing.List[int]):
+def read_from_csv() -> typing.Tuple[typing.List[int], typing.List[int]]:
     """
     reads historical data from .csv.
     """
     values_array = []
     dates_array = []
-    with open("networth_over_time.csv", mode="r") as f:
+    with open("res/networth_over_time.csv", mode="r") as f:
         reader = csv.reader(f)
 
         # skip header
@@ -80,7 +80,7 @@ def read_positions() -> typing.Tuple[typing.List[str], typing.List[int]]:
     """
     tickers = []
     amounts = []
-    with open("positions.csv", mode="r") as f:
+    with open("res/positions.csv", mode="r") as f:
         reader = csv.reader(f)
 
         # skip header
