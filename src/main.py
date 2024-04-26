@@ -7,13 +7,16 @@ import datetime
 import typing
 from logger import Logger
 
+POSITIONS_FILE_PATH = "res/positions.csv"
+NETWORTH_FILE_PATH = "res/networth_over_time.csv"
+
+# assets in euro
+EUROS = ['VWCE.DE', 'M44.BE', 'EUNM.DE', '82W.BE', 'Bank_Sparbuch', 'Bank_N26', 'Bank_Raika']  # insert here!
+
 # load current eur-usd exchange rate
 tickerSymbol = 'EURUSD=X'
 tickerData = yf.Ticker(tickerSymbol)
 exchangeRate = tickerData.info['regularMarketOpen']
-
-# assets in eur
-EUROS = ['VWCE.DE', 'M44.BE', 'EUNM.DE', '82W.BE', 'Bank_Sparbuch', 'Bank_N26', 'Bank_Raika']  # insert here!
 
 logger = Logger()
 
@@ -23,11 +26,11 @@ def calculate_value(ticker: str, num_shares: float) -> float:
     return yf.Ticker(ticker).info['regularMarketOpen'] * num_shares
 
 
-def save_to_file(value: float):
+def write_networth_to_file(value: float):
     """
-    saves current networth `value` to `positions.csv`.
+    saves current networth `value`.
     """
-    with open("res/networth_over_time.csv", mode="a", newline="") as f:
+    with open(NETWORTH_FILE_PATH, mode="a", newline="") as f:
         writer = csv.writer(f)
 
         current_time = int(time.time())
@@ -38,11 +41,11 @@ def save_to_file(value: float):
         writer.writerow(data)
 
 
-def plot_networth():
+def plot_networth_history():
     """
     plots networth history in a coordinate system using time in x axis and value on y axis.
     """
-    dates, values = read_from_csv()
+    dates, values = load_networth_history()
 
     plt.figure(figsize=(10, 6))
     
@@ -53,13 +56,13 @@ def plot_networth():
     plt.show()
 
 
-def read_from_csv() -> typing.Tuple[typing.List[int], typing.List[int]]:
+def load_networth_history() -> typing.Tuple[typing.List[int], typing.List[int]]:
     """
     reads historical data from .csv.
     """
     values_array = []
     dates_array = []
-    with open("res/networth_over_time.csv", mode="r") as f:
+    with open(NETWORTH_FILE_PATH, mode="r") as f:
         reader = csv.reader(f)
 
         # skip header
@@ -74,13 +77,13 @@ def read_from_csv() -> typing.Tuple[typing.List[int], typing.List[int]]:
     return (dates_array, values_array)
 
 
-def read_positions() -> typing.Tuple[typing.List[str], typing.List[int]]:
+def load_positions() -> typing.Tuple[typing.List[str], typing.List[int]]:
     """
     reads positions from .csv.
     """
     tickers = []
     amounts = []
-    with open("res/positions.csv", mode="r") as f:
+    with open(POSITIONS_FILE_PATH, mode="r") as f:
         reader = csv.reader(f)
 
         # skip header
@@ -128,7 +131,7 @@ def handle_cli() -> bool:
             sys.exit(1)
 
         elif sys.argv[1] == '--plotonly':
-            plot_networth()
+            plot_networth_history()
             sys.exit(1)     # exit early, dont want to calculate current networth
 
         else:
@@ -142,7 +145,7 @@ def main():
     flag = handle_cli()
 
     # load positions from .csv
-    tickers, amounts = read_positions()
+    tickers, amounts = load_positions()
 
     # calculate total value of all positions
     total_value = 0
@@ -160,7 +163,6 @@ def main():
             # calculate usd value of euro assets
             value = value * exchangeRate
 
-        # print to terminal
         formatted_output = "ticker: {:<{width}} worth: {:{width}.2f}".format(ticker, value, width=15)
         logger.log(formatted_output)
         print(formatted_output)
@@ -171,15 +173,14 @@ def main():
     total_value /= exchangeRate
     total_value = round(total_value, 2)
 
-    # print total value of portfolio
     logger.log(f"Total portfolio value in €: {total_value:.2f}")
     print(f"Total portfolio value in €: {total_value:.2f}")
 
     # add to csv
-    save_to_file(total_value)
+    write_networth_to_file(total_value)
 
     if flag:
-        plot_networth()
+        plot_networth_history()
 
 
 if __name__ == '__main__':
