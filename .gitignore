@@ -8,3 +8,4 @@ positions_eur.txt
 /venv
 logs/*.log
 __pycache__
+res/*.json
