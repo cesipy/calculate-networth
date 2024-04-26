@@ -7,9 +7,10 @@ import datetime
 import typing
 from logger import Logger
 import argparse
+import json
 
-POSITIONS_FILE_PATH = "res/positions.csv"
-NETWORTH_FILE_PATH = "res/networth_over_time.csv"
+POSITIONS_FILE_PATH = "res/positions.json"
+NETWORTH_FILE_PATH = "res/networth_over_time.json"
 
 # assets in euro
 EUROS = ['VWCE.DE', 'M44.BE', 'EUNM.DE', '82W.BE', 'Bank_Sparbuch', 'Bank_N26', 'Bank_Raika']  # insert here!
@@ -31,15 +32,20 @@ def write_networth_to_file(value: float):
     """
     saves current networth `value`.
     """
-    with open(NETWORTH_FILE_PATH, mode="a", newline="") as f:
-        writer = csv.writer(f)
+    current_time = int(time.time())
+    new_data     = {'time': str(current_time), 'value': str(value)}
 
-        current_time = int(time.time())
+       # Read existing data
+    try:
+        with open(NETWORTH_FILE_PATH, "r") as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        data = []
 
-        # prepare data for csv
-        data = [current_time, value]
-        # write to csv
-        writer.writerow(data)
+    data.append(new_data)
+
+    with open(NETWORTH_FILE_PATH, "w") as f:
+        json.dump(data, f, indent=4)
 
 
 def plot_networth_history():
@@ -64,16 +70,15 @@ def load_networth_history() -> typing.Tuple[typing.List[int], typing.List[int]]:
     values_array = []
     dates_array = []
     with open(NETWORTH_FILE_PATH, mode="r") as f:
-        reader = csv.reader(f)
+        data_list = json.load(f)
+    
+    for data in data_list:
+        unix_timestamp = int(data['time'])
+        formatted_date = datetime.datetime.fromtimestamp(unix_timestamp).date()
+        value          = float(data['value'])
 
-        # skip header
-        header = next(reader, None)
-
-        for row in reader:
-            unix_timestamp = int(row[0])
-            date_object = datetime.datetime.fromtimestamp(unix_timestamp).date()
-            values_array.append(float(row[1]))
-            dates_array.append(date_object)
+        values_array.append(value)
+        dates_array.append(formatted_date)
 
     return (dates_array, values_array)
 
@@ -84,19 +89,14 @@ def load_positions() -> typing.Tuple[typing.List[str], typing.List[int]]:
     """
     tickers = []
     amounts = []
-    with open(POSITIONS_FILE_PATH, mode="r") as f:
-        reader = csv.reader(f)
+    
+    with open(POSITIONS_FILE_PATH, "r") as f: 
+        data_list = json.load(f)
 
-        # skip header
-        header = next(reader, None)
+    for data in data_list:
+        tickers.append(data['ticker'])
+        amounts.append(float(data['amount']))
 
-        for row in reader:
-            ticker = row[0]
-            amount = float(row[1])
-
-            # add to arrays
-            tickers.append(ticker)
-            amounts.append(amount)
 
     return tickers, amounts
 
