@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import datetime
 import typing
 from logger import Logger
+import argparse
 
 POSITIONS_FILE_PATH = "res/positions.csv"
 NETWORTH_FILE_PATH = "res/networth_over_time.csv"
@@ -110,35 +111,17 @@ def handle_cli() -> bool:
 
     :return: flag indicating, if networth should be plotted.
     """
-    flag: bool = False
-    if len(sys.argv) >= 2:
+    parser = argparse.ArgumentParser(description='Calculate and plot net worth.')
+    parser.add_argument('--plot', action='store_true', help='Plot networth history.')
+    parser.add_argument('--plotonly', action='store_true', help='Only plot networth history, do not calculate current networth.')
+    
+    args = parser.parse_args()
 
-        if sys.argv[1] == '--plot':
-            flag = True
+    if args.plotonly:
+        plot_networth_history()
+        sys.exit(1)     # exit early, don't want to calculate current networth
 
-        elif sys.argv[1] == '--help':
-            usage: str = """
-    usage: 
-    for simple calculation of current networth: python {}
-
-    for calculation of current networth and plot of networth history: python {} --plot 
-
-    for plot only: python {} --plotonly
-                
-                """.format(sys.argv[0], sys.argv[0], sys.argv[0])
-
-            print(usage)
-            sys.exit(1)
-
-        elif sys.argv[1] == '--plotonly':
-            plot_networth_history()
-            sys.exit(1)     # exit early, dont want to calculate current networth
-
-        else:
-            print("incorrect usage! type 'python {} --help' for usage".format(sys.argv[0]))
-            sys.exit(1)
-
-    return flag
+    return args.plot
 
 
 def main():
