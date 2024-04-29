@@ -8,12 +8,27 @@ import typing
 from logger import Logger
 import argparse
 import json
+import os
 
 POSITIONS_FILE_PATH = "res/positions.json"
-NETWORTH_FILE_PATH = "res/networth_over_time.json"
+NETWORTH_FILE_PATH  = "res/networth_over_time.json"
+EUROS_PATH          = "res/positions_eur.txt"
+
+
+def get_euro_assets(path: str): 
+    # if file does not exists, just return empty list
+    if not os.path.exists(path):
+        return []
+    with open(path, "r") as f:
+        data = f.read()
+    
+    euros = data.split(",")
+
+    return euros
+
 
 # assets in euro
-EUROS = ['VWCE.DE', 'M44.BE', 'EUNM.DE', '82W.BE', 'Bank_Sparbuch', 'Bank_N26', 'Bank_Raika']  # insert here!
+EUROS = get_euro_assets(EUROS_PATH)  # insert here!
 
 # load current eur-usd exchange rate
 tickerSymbol = 'EURUSD=X'
@@ -21,6 +36,9 @@ tickerData = yf.Ticker(tickerSymbol)
 exchangeRate = tickerData.info['regularMarketOpen']
 
 logger = Logger()
+
+
+
 
 def calculate_value(ticker: str, num_shares: float) -> float:
     if ticker.startswith("Bank") or ticker.startswith("bank"):
