@@ -201,6 +201,8 @@ def main():
 
     if flag:
         plot_networth_history()
+    
+    return total_current_value
 
 
 if __name__ == '__main__':
