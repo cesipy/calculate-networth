@@ -1,5 +1,5 @@
 # TODO
 
-- [ ] save the amount every time command is run to file.
-- [ ] save timestemp (UNIX) to file
-- [ ] plot amount for several times
+- [ ] total and relative profit. (diff between current value & invested value)
+- [ ] asset allocation visualization
+- [ ] make webapp for this
